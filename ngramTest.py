@@ -1,11 +1,13 @@
 # coding: utf-8
 
-import os.path
+import os
 import codecs
+import glob
 
 x = 0
 
 def ngram(text, n):
+
 	results = []
 	global x
 	if len(text) >= n:
@@ -14,17 +16,27 @@ def ngram(text, n):
 			x+=1
 	return results
 
-f = codecs.open('data/001.txt', 'r', 'utf-8')
-text = f.read()
+for files in glob.glob('data/*'):
 
-words = {}
-for word in ngram(text, 3):
-	words[word] = words.get(word, 0) + 1
+	f = codecs.open(files, 'r', 'utf-8')
+	text = f.read()
+	
+	print(files.replace('data/', ''))
 
-d = [(v, k) for k , v in words.items()]
-d.sort()
-d.reverse()
-print(x)
-for count, word in d:
-	tf = count / float(x)
-	print count, word, "%.4f"%(tf)
+	files = files.replace('data/', '')
+
+	words = {}
+	for word in ngram(text, 3):
+		words[word] = words.get(word, 0) + 1
+
+	d = [(v, k) for k , v in words.items()]
+	d.sort()
+	d.reverse()
+
+	g = codecs.open('results/' + files, 'w', 'utf-8')
+
+	for count, word in d:
+		tf = float(count) / float(x)
+		g.write(str(count) + word + "%.4f"%(tf) + "\n")
+
+	g.close()
