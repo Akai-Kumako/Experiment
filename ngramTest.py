@@ -3,7 +3,7 @@
 import os.path
 import codecs
 
-x = 1
+x = 0
 
 def ngram(text, n):
 	results = []
@@ -24,7 +24,7 @@ for word in ngram(text, 3):
 d = [(v, k) for k , v in words.items()]
 d.sort()
 d.reverse()
-for count, word in d:
-	print count, word 
-
 print(x)
+for count, word in d:
+	tf = count / float(x)
+	print count, word, "%.4f"%(tf)
