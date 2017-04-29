@@ -25,18 +25,20 @@ for files in glob.glob('data/*'):
 
 	files = files.replace('data/', '')
 
-	words = {}
-	for word in ngram(text, 3):
-		words[word] = words.get(word, 0) + 1
+	for i in range(4):
 
-	d = [(v, k) for k , v in words.items()]
-	d.sort()
-	d.reverse()
+		words = {}
+		for word in ngram(text, i + 2):
+			words[word] = words.get(word, 0) + 1
 
-	g = codecs.open('results/' + files, 'w', 'utf-8')
+		d = [(v, k) for k , v in words.items()]
+		d.sort()
+		d.reverse()
 
-	for count, word in d:
-		tf = float(count) / float(x)
-		g.write(str(count) + word + "%.4f"%(tf) + "\n")
+		g = codecs.open('results/' + str(i+2) + '_' + files, 'w', 'utf-8')
 
-	g.close()
+		for count, word in d:
+			tf = count / x
+			g.write(str(count) + " " + word + " " + "%.6f"%(tf) + "\n")
+
+		g.close()
