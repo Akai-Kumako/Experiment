@@ -34,6 +34,7 @@ for files in glob.glob('data/*'):
 
 	files = files.replace('data/', '')
 
+<<<<<<< HEAD
 	for i in range(1, 6, 1):
 
 		words = {}
@@ -132,3 +133,22 @@ for cnt, w in e:
 	h.write(w + " " + "%.4f"%(idf) + "\n")
 
 h.close()   	
+=======
+	for i in range(4):
+
+		words = {}
+		for word in ngram(text, i + 2):
+			words[word] = words.get(word, 0) + 1
+
+		d = [(v, k) for k , v in words.items()]
+		d.sort()
+		d.reverse()
+
+		g = codecs.open('results/' + str(i+2) + '_' + files, 'w', 'utf-8')
+
+		for count, word in d:
+			tf = count / x
+			g.write(str(count) + " " + word + " " + "%.6f"%(tf) + "\n")
+
+		g.close()
+>>>>>>> origin/master
