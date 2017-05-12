@@ -61,11 +61,11 @@ for files in glob.glob('data/*'):
 	for word in ngram(text, k):
 		words[word] = words.get(word, 0) + 1
 
-	d = [(v, k) for k, v in Ngram.items()]
+	d = [(v, k) for k, v in words.items()]
 	d.sort()
 	d.reverse()
 
-	g = codecs.open('results/' + str(k) + "_" + files, 'w', 'utf-8')
+	g = codecs.open('mojigram/' + str(k) + "_" + files, 'w', 'utf-8')
 
 	for count, word in d:
 		tf = float(count) / float(x)
