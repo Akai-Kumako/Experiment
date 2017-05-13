@@ -8,7 +8,7 @@ import sys
 import MeCab
 import re
 
-#単語ngramの関数
+#単語に分割する関数
 def tango(text):
 
 	m = MeCab.Tagger("mecabrc")
@@ -28,6 +28,7 @@ def tango(text):
 			txt.append('')
 	return txt
 
+#Ngramを求める関数
 def ngram(text, n):
 
 	results = []
@@ -42,8 +43,9 @@ def ngram(text, n):
 args = sys.argv
 y = 0
 Ngram = {}
-k = int(args[1])
+k = 1
 IDF = {}
+IDFfiles = {}
 
 #IDFの値を求める
 
@@ -61,16 +63,27 @@ for files in glob.glob('data/*'):
 	for word in ngram(text, k):
 		words[word] = words.get(word, 0) + 1
 
+	files = files.replace("data/", "")
+
 	for word in words.keys():
 		Ngram[word] = words.get(word, 0) + 1
+		IDFfiles[word] = IDFfiles.get(word, "") + "\t" + files
 
-e = [(v, k) for k , v in Ngram.items()]
+e = [(v, k) for k, v in Ngram.items()]
 e.sort()
 e.reverse()		
 
 for count, word in e:
 	idf = math.log2(float(y) / float(count))
 	IDF[word] = idf
+
+#転置インデックスを作成してファイルに出力する
+
+h = codecs.open('tango-index/tangolist.txt', 'w', 'utf-8')
+b = [(v, k) for k, v in IDFfiles.items()]
+for files, word in b:
+	h.write(word + files + "\n")
+h.close()
 
 #TFの値を求める
 #TF-IDEの値をファイルに出力する
@@ -93,20 +106,27 @@ for files in glob.glob('data/*'):
 	d.sort()
 	d.reverse()
 
-	g = codecs.open('tango-index/' + str(k) + "_" + files, 'w', 'utf-8')
+	g = codecs.open('tango-index/' + files, 'w', 'utf-8')
 
 	results = {}
 	for count, word in d:
 		tf = float(count) / float(x)
 		tfidf = "%.4f"%(tf * IDF[word])
 		results[word] = tfidf
-	c = [(v, k) for k, v in results.items()]
-	c.sort()
-	c.reverse()
+	c = [(v, k) for k, v in sorted(results.items())]
+	#c.sort()
+	#c.reverse()
 
 	for count, word in c:
 		g.write(word + "\t" + count + "\n")
 
-	print(files)	
-
 	g.close()
+
+#検索結果を表示する
+#for argument in range(1, len(argvs) + 1):
+#	provisional = [""] * (len(argvs) + 1)
+#	if not(IDFfiles.get(args[argument]) = None)
+#		provisional[argument] = IDFfiles.get(args[argument]).split("\t")
+
+
+print(IDFfiles.get(args[1], "検索結果はありません"))
