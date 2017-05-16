@@ -8,6 +8,7 @@ import sys
 import MeCab
 import re
 
+
 #単語に分割する関数
 def tango(text):
 
@@ -122,11 +123,16 @@ for files in glob.glob('data/*'):
 
 	g.close()
 
+argvs = sys.argv
 #検索結果を表示する
-#for argument in range(1, len(argvs) + 1):
-#	provisional = [""] * (len(argvs) + 1)
-#	if not(IDFfiles.get(args[argument]) = None)
-#		provisional[argument] = IDFfiles.get(args[argument]).split("\t")
-
-
-print(IDFfiles.get(args[1], "検索結果はありません"))
+res = {}
+out = []
+for argument in range(1, len(argvs)):
+	texts = []
+	texts = IDFfiles.get(args[argument], "").split("\t")
+	res[args[argument]] = texts		
+	if(argument == 1):
+		out = set(res.get(args[argument], ""))
+	else:
+		out = out.update(set(res.get(args[argument], "")))
+print(out, "検索結果はありません")
