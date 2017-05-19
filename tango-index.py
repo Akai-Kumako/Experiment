@@ -7,7 +7,7 @@ import math
 import sys
 import MeCab
 import re
-
+import numpy as np
 
 #単語に分割する関数
 def tango(text):
@@ -87,8 +87,9 @@ for files, word in b:
 h.close()
 
 #TFの値を求める
-#TF-IDEの値をファイルに出力する
+#TF-IDFの値をファイルに出力する
 
+brains = {} #全ファイルの全単語に対するTF-IDF値が格納された辞書 
 for files in glob.glob('data/*'):
 
 	f = codecs.open(files, 'r', 'utf-8')
@@ -115,8 +116,8 @@ for files in glob.glob('data/*'):
 		tfidf = "%.4f"%(tf * IDF[word])
 		results[word] = tfidf
 	c = [(v, k) for k, v in sorted(results.items())]
-	#c.sort()
-	#c.reverse()
+
+	brains[files] = results
 
 	for count, word in c:
 		g.write(word + "\t" + count + "\n")
@@ -124,6 +125,7 @@ for files in glob.glob('data/*'):
 	g.close()
 
 argvs = sys.argv
+
 #検索結果を表示する
 res = {}
 out = []
@@ -132,7 +134,29 @@ for argument in range(1, len(argvs)):
 	texts = IDFfiles.get(args[argument], "").split("\t")
 	res[args[argument]] = texts		
 	if(argument == 1):
-		out = set(res.get(args[argument], ""))
+		out = res.get(args[argument], "")
 	else:
-		out = out.update(set(res.get(args[argument], "")))
-print(out, "検索結果はありません")
+		out = list(set(out) & set(res.get(args[argument], "")))
+out.remove("")
+print(out)
+
+#検索結果をランキング形式で表示する
+
+standard = "0";
+standardfile = "";
+for here in range(len(out)):
+	if standard < brains[out[here]][args[1]]:
+		standard = brains[out[here]][args[1]]
+		standardfile = out[here]
+
+standardvalues = brains[standardfile].values()
+standardvalues = [float(n) for n in standardvalues] #文字列リストを浮動小数点型リストに変換
+print(standardvalues)
+standardvalues = [x ** 2 for x in standardvalues] #リストの各要素を二乗する
+print(sum(standardvalues))
+
+subfiles = out
+subfiles.remove(standardfile)
+print(subfiles) 
+
+print(standardfile)
