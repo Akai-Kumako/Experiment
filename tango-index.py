@@ -142,21 +142,52 @@ print(out)
 
 #検索結果をランキング形式で表示する
 
-standard = "0";
-standardfile = "";
-for here in range(len(out)):
-	if standard < brains[out[here]][args[1]]:
-		standard = brains[out[here]][args[1]]
-		standardfile = out[here]
+if(len(out) == 0):
+	print("該当するファイルはありません。")
 
-standardvalues = brains[standardfile].values()
-standardvalues = [float(n) for n in standardvalues] #文字列リストを浮動小数点型リストに変換
-print(standardvalues)
-standardvalues = [x ** 2 for x in standardvalues] #リストの各要素を二乗する
-print(sum(standardvalues))
+else:
+	standard = "0";
+	standardfile = "";
+	for here in range(len(out)):
+		if standard < brains[out[here]][args[1]]:
+			standard = brains[out[here]][args[1]]
+			standardfile = out[here]
+	
+	##絶対値を計算
+	standardvalues = brains[standardfile].values()
+	standardvalues = [float(n) for n in standardvalues] #文字列リストを浮動小数点型リストに変換
+	standardvalues = [x ** 2 for x in standardvalues] #リストの各要素を二乗する
+	print(sum(standardvalues))
 
-subfiles = out
-subfiles.remove(standardfile)
-print(subfiles) 
+	subfiles = out
+	subfiles.remove(standardfile)
+	print(subfiles)
 
-print(standardfile)
+	absolute = {}
+	for f in subfiles:
+		values = brains[f].values()
+		values = [float(n) for n in values]
+		values = [x ** 2 for x in values]
+		absolute[f] = sum(values)
+	print(absolute)
+
+	##内積を計算
+	inner = {}
+	for f in subfiles:
+		keys = list(set(brains[f].keys()) & set(brains[standardfile].keys()))
+		inn = 0
+		print(keys)
+		for k in keys:
+			inn += float(brains[f].get(k, 0)) * float(brains[standardfile].get(k, 0))
+		inner[f] = inn
+	print(inner)
+
+	##類似度を計算
+	similarity = {}
+	for f in subfiles:
+		degree = inner.get(f, 0) / math.sqrt(absolute.get(f, 0)) * math.sqrt((sum(standardvalues)))
+		similarity[f] = degree
+
+	print(similarity)
+
+	print(sorted(similarity.keys(), key = lambda x:x[1]))
