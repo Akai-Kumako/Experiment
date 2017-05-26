@@ -129,6 +129,9 @@ argvs = sys.argv
 #検索結果を表示する
 res = {}
 out = []
+if(len(argvs) == 1):
+	print("検索条件を引数に入力してください")
+	sys.exit()
 for argument in range(1, len(argvs)):
 	texts = []
 	texts = IDFfiles.get(args[argument], "").split("\t")
@@ -138,13 +141,11 @@ for argument in range(1, len(argvs)):
 	else:
 		out = list(set(out) & set(res.get(args[argument], "")))
 out.remove("")
-print(out)
 
 #検索結果をランキング形式で表示する
 
 if(len(out) == 0):
 	print("該当するファイルはありません。")
-
 else:
 	standard = "0";
 	standardfile = "";
@@ -157,11 +158,9 @@ else:
 	standardvalues = brains[standardfile].values()
 	standardvalues = [float(n) for n in standardvalues] #文字列リストを浮動小数点型リストに変換
 	standardvalues = [x ** 2 for x in standardvalues] #リストの各要素を二乗する
-	print(sum(standardvalues))
 
-	subfiles = out
+	subfiles = list(out)
 	subfiles.remove(standardfile)
-	print(subfiles)
 
 	absolute = {}
 	for f in subfiles:
@@ -169,18 +168,15 @@ else:
 		values = [float(n) for n in values]
 		values = [x ** 2 for x in values]
 		absolute[f] = sum(values)
-	print(absolute)
 
 	##内積を計算
 	inner = {}
 	for f in subfiles:
 		keys = list(set(brains[f].keys()) & set(brains[standardfile].keys()))
 		inn = 0
-		print(keys)
 		for k in keys:
 			inn += float(brains[f].get(k, 0)) * float(brains[standardfile].get(k, 0))
 		inner[f] = inn
-	print(inner)
 
 	##類似度を計算
 	similarity = {}
@@ -188,6 +184,7 @@ else:
 		degree = inner.get(f, 0) / math.sqrt(absolute.get(f, 0)) * math.sqrt((sum(standardvalues)))
 		similarity[f] = degree
 
-	print(similarity)
-
-	print(sorted(similarity.keys(), key = lambda x:x[1]))
+	print("検索結果:" + str(len(out)) + "件")
+	print(standardfile)
+	for k, v in sorted(similarity.items(), key = lambda x:x[1]):
+		print(k)
