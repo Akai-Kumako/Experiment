@@ -1,0 +1,17 @@
+#元データファイル
+/Wikipedia
+/data
+/example
+
+#文字グラム結果ファイル
+/mojigram
+/mojigram-rm
+/moji-index
+
+#単語グラム結果ファイル
+/tangogram
+/tangogram-rm
+/tango-index
+
+#テストファイル
+/test-index
