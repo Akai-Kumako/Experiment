@@ -7,11 +7,13 @@
 /mojigram
 /mojigram-rm
 /moji-index
+/moji-wiki
 
 #単語グラム結果ファイル
 /tangogram
 /tangogram-rm
 /tango-index
+/tango-wiki
 
 #テストファイル
 /test-index
