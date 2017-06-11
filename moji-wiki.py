@@ -104,6 +104,8 @@ for files in glob.glob('Wikipedia/*'):
 	for word in ngram(text, k):
 		words[word] = words.get(word, 0) + 1
 
+	if(args[1] == 2): words.pop("  ")
+
 	d = [(v, k) for k, v in words.items()]
 	d.sort()
 	d.reverse()
@@ -120,7 +122,7 @@ for files in glob.glob('Wikipedia/*'):
 	brains[files] = results
 
 	for count, word in c:
-		g.write(word + "\t" + count + "\n")
+		g.write("'" + word + "'" + "\t" + count + "\n")
 
 	g.close()
 
@@ -181,10 +183,10 @@ else:
 	##類似度を計算
 	similarity = {}
 	for f in subfiles:
-		degree = inner.get(f, 0) / math.sqrt(absolute.get(f, 0)) * math.sqrt((sum(standardvalues)))
+		degree = inner.get(f, 0) / (math.sqrt(absolute.get(f, 0)) * math.sqrt((sum(standardvalues))))
 		similarity[f] = degree
 
 	print("検索結果:" + str(len(out)) + "件")
 	print(standardfile)
-	for k, v in sorted(similarity.items(), key = lambda x:x[1]):
-		print(k)
+	for k, v in sorted(similarity.items(), key = lambda x:x[1], reverse=True):
+		print(k + " :	" + str(v))
